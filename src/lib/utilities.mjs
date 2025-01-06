@@ -20,7 +20,6 @@ export function isFileAcceptable(file, accept) {
  
    const acceptPatterns = accept.split(',').map((pattern) => pattern.trim())
    const fileType = file.type
-   const fileExtension = `.${file.name.split('.').pop().toLowerCase()}`
  
    return acceptPatterns.some((pattern) => {
       // Check for wildcards (e.g., image/*)

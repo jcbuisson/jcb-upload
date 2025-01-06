@@ -35,7 +35,7 @@ export class Upload extends LitElement {
       // console.log('onDragEnter', e)
       e.preventDefault() // prevent default to allow drop (why?)
       // when firing dragenter, dragover and dragleave, browser shows only e.dataTransfer.items, not e.dataTransfer.files (see https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items)
-      const acceptable = Array.from(e.dataTransfer.items).every(item => isItemAcceptable(item, this.accept))
+      const acceptable = (this.multiple || e.dataTransfer.items.length === 1) && Array.from(e.dataTransfer.items).every(item => isItemAcceptable(item, this.accept))
       e.target.classList.add(acceptable ? 'hovering' : 'error')
    }
 
