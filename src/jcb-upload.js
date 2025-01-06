@@ -1,46 +1,78 @@
 import { LitElement, css, html } from 'lit'
+import { readFileAsyncAsArrayBuffer, isFileAcceptable, isItemAcceptable } from './lib/utilities.mjs'
 
 /**
    * A custom-element which displays a drag&drop zone and handles file uploads
-   * @attr {Boolean} multi - Indicates whether multiple files can be uploaded
-   * @cssprop --jcb-upload-color - Color of the ticks
+   * @attr {Boolean} multiple - Indicates whether multiple files can be uploaded
+   * @attr {Number} chunksize - Chunk size when providing file contents chunk by chunk
+   * @attr {String} accept - Accepted Mime types, comma-separated
    * @cssprop --jcb-upload-background-color - Color of the background
    * @cssprop --jcb-upload-hover-color - Color of the background on hover
-   * --jcb-upload-border-width
-   * --jcb-upload-border-color
-   * --jcb-upload-border-radius
+   * @cssprop --jcb-upload-error-color - Color of the background on hover with unacceptable files
+   * @cssprop --jcb-upload-border-width
+   * @cssprop --jcb-upload-border-color
+   * @cssprop --jcb-upload-border-radius
    */
 export class Upload extends LitElement {
 
    static get properties() {
       return {
-         multi: { type: Boolean },
+         multiple: { type: Boolean },
+         chunksize: { type: Number },
+         accept: { type: String },
       }
    }
 
    constructor() {
       super()
       // default values - before override by attributes
-      this.multi = false
+      this.multiple = false
+      this.chunksize = 32768
+      this.accept = undefined
    }
-   
+
+   onDragEnter(e) {
+      // console.log('onDragEnter', e)
+      e.preventDefault() // prevent default to allow drop (why?)
+      // when firing dragenter, dragover and dragleave, browser shows only e.dataTransfer.items, not e.dataTransfer.files (see https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items)
+      const acceptable = Array.from(e.dataTransfer.items).every(item => isItemAcceptable(item, this.accept))
+      e.target.classList.add(acceptable ? 'hovering' : 'error')
+   }
+
    onDragOver(e) {
       // console.log('onDragOver', e)
-      e.preventDefault()
-      e.target.classList.add('hovering')
+      e.preventDefault() // prevent default to allow drop (why?)
    }
 
    onDragLeave(e) {
       // console.log('onDragLeave', e)
       e.target.classList.remove('hovering')
+      e.target.classList.remove('error')
    }
 
    onDrop(e) {
-      // console.log('onDrop')
-      e.preventDefault()
+      // console.log('onDrop', e)
+      e.preventDefault() // prevent default to handle files
       e.target.classList.remove('hovering')
-      for (const file of e.dataTransfer.files) {
-         this.uploadFile(file)
+      e.target.classList.remove('error')
+      if (!this.multiple && e.dataTransfer.files.length > 1) {
+         this.dispatchEvent(new CustomEvent('upload-error', {
+            detail: { errorcode: 'no-multiple' }, // Pass data with the event
+            bubbles: true, // Allow the event to bubble up through the DOM
+            composed: true, // Allow the event to pass the shadow DOM boundary
+         }))
+      } else {
+         if (Array.from(e.dataTransfer.files).some(file => !isFileAcceptable(file, this.accept))) {
+            this.dispatchEvent(new CustomEvent('upload-error', {
+               detail: { errorcode: 'wrong-type' }, // Pass data with the event
+               bubbles: true, // Allow the event to bubble up through the DOM
+               composed: true, // Allow the event to pass the shadow DOM boundary
+            }))
+         } else {
+            for (const file of e.dataTransfer.files) {
+               this.uploadFile(file)
+            }
+         }
       }
    }
 
@@ -53,18 +85,36 @@ export class Upload extends LitElement {
    // called when files have been selected in <input type='file'>
    onFileInputChange(e) {
       console.log('onFileInputChange', e.target.files)
+      for (const file of e.target.files) {
+         this.uploadFile(file)
+      }
    }
 
-   uploadFile(file) {
-      console.log('file', file)
+   async uploadFile(file) {
+      // console.log('file', file)
+
       // signal start of file upload
       this.dispatchEvent(new CustomEvent('upload-start', {
          detail: { file }, // Pass data with the event
          bubbles: true, // Allow the event to bubble up through the DOM
          composed: true, // Allow the event to pass the shadow DOM boundary
       }))
-      // send file contents chunk by chunk
 
+      // send file contents chunk by chunk
+      const arrayBuffer = await readFileAsyncAsArrayBuffer(file)
+      let transmittedCount = 0
+      for (let offset = 0; offset < arrayBuffer.byteLength; offset += this.chunksize) {
+         // the last slice is usually smaller
+         const arrayBufferSlice = arrayBuffer.slice(offset, offset + this.chunksize)
+         this.dispatchEvent(new CustomEvent('upload-chunk', {
+            detail: { file, arrayBufferSlice }, // Pass data with the event
+            bubbles: true, // Allow the event to bubble up through the DOM
+            composed: true, // Allow the event to pass the shadow DOM boundary
+         }))
+         transmittedCount += arrayBufferSlice.byteLength
+         // await timeout(10) // ??? nécessaire pour que le spinner soit visible
+      }
+   
       // signal end of file upload
       this.dispatchEvent(new CustomEvent('upload-end', {
          detail: { file }, // Pass data with the event
@@ -77,13 +127,14 @@ export class Upload extends LitElement {
    render() {
       // console.log('render')
       return html`
-         <div class="dropzone" @dragover="${this.onDragOver}" @dragleave="${this.onDragLeave}" @drop="${this.onDrop}" @click="${this.onClick}">
+         <div class="dropzone" @dragenter="${this.onDragEnter}" @dragover="${this.onDragOver}" @dragleave="${this.onDragLeave}" @drop="${this.onDrop}" @click="${this.onClick}">
             <div class="text">
                <div>
                   <slot></slot>
                </div>
             </div>
-            <input type="file" id="fileInput" name="file" ${this.multi} accept="application/pdf" hidden @change="${this.onFileInputChange}">
+            
+            <input type="file" id="fileInput" name="file" ?multiple="${this.multiple}" accept="${this.accept}" hidden @change="${this.onFileInputChange}">
          </div>
       `
    }
@@ -116,6 +167,11 @@ export class Upload extends LitElement {
          .dropzone.hovering {
             border-color: #000;
             background-color: var(--jcb-upload-hover-color, #f0f0f0);
+         }
+
+         .dropzone.error {
+            border-color: #000;
+            background-color: var(--jcb-upload-error-color, #F88);
          }
 
          .text {
