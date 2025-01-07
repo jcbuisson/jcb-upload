@@ -15,29 +15,7 @@ export function readFileAsyncAsArrayBuffer(file) {
    })
 }
 
-export function isFileAcceptable(file, accept) {
-   if (!accept) return true // No accept pattern, all files are allowed
- 
-   const acceptPatterns = accept.split(',').map((pattern) => pattern.trim())
-   const fileType = file.type
- 
-   return acceptPatterns.some((pattern) => {
-      // Check for wildcards (e.g., image/*)
-      if (pattern.endsWith('/*')) {
-         const baseType = pattern.slice(0, -2) // e.g., "image/*" -> "image"
-         console.log('baseType', baseType)
-         return fileType.startsWith(baseType)
-      }
-   
-      // Check for exact MIME types (e.g., image/png)
-      if (pattern.includes('/')) {
-         return fileType === pattern
-      }
-   
-      return false
-   })
-}
-
+// item comes from e.dataTransfer.items or e.dataTransfer.items, see: https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items
 export function isItemAcceptable(item, accept) {
    if (!accept) return true // No accept pattern, all items are allowed
  

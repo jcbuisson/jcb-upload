@@ -1,5 +1,5 @@
 import { LitElement, css, html } from 'lit'
-import { readFileAsyncAsArrayBuffer, isFileAcceptable, isItemAcceptable } from './lib/utilities.mjs'
+import { readFileAsyncAsArrayBuffer, isItemAcceptable } from './lib/utilities.mjs'
 
 /**
    * A custom-element which displays a drag&drop zone and handles file uploads
@@ -62,7 +62,7 @@ export class Upload extends LitElement {
             composed: true, // Allow the event to pass the shadow DOM boundary
          }))
       } else {
-         if (Array.from(e.dataTransfer.files).some(file => !isFileAcceptable(file, this.accept))) {
+         if (Array.from(e.dataTransfer.files).some(file => !isItemAcceptable(file, this.accept))) {
             this.dispatchEvent(new CustomEvent('upload-error', {
                detail: { errorcode: 'wrong-type' }, // Pass data with the event
                bubbles: true, // Allow the event to bubble up through the DOM
@@ -148,13 +148,16 @@ export class Upload extends LitElement {
             height: 100%; /* <jcb-upload> takes full parent height */
          }
 
+         * {
+            box-sizing: border-box;
+         }
+
          .dropzone {
             border-style: dashed;
             border-width: var(--jcb-upload-border-width, 2px);
             border-color: var(--jcb-upload-border-color, #aaa);
             border-radius: var(--jcb-upload-border-radius, 20px);
-            padding: 20px;
-            margin: 20px auto;
+            margin: auto;
             cursor: pointer;
             width: 100%;
             height: 100%;
