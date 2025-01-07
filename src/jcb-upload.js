@@ -33,7 +33,7 @@ export class Upload extends LitElement {
    }
 
    onDragEnter(e) {
-      // console.log('onDragEnter', e)
+      console.log('onDragEnter', e)
       e.preventDefault() // prevent default to allow drop (why?)
       // when firing dragenter, dragover and dragleave, browser shows only e.dataTransfer.items, not e.dataTransfer.files (see https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items)
       const acceptable = (this.multiple || e.dataTransfer.items.length === 1) && Array.from(e.dataTransfer.items).every(item => isItemAcceptable(item, this.accept))
@@ -41,12 +41,12 @@ export class Upload extends LitElement {
    }
 
    onDragOver(e) {
-      // console.log('onDragOver', e)
+      console.log('onDragOver', e)
       e.preventDefault() // prevent default to allow drop (why?)
    }
 
    onDragLeave(e) {
-      // console.log('onDragLeave', e)
+      console.log('onDragLeave', e)
       e.target.classList.remove('hovering')
       e.target.classList.remove('error')
    }
@@ -183,6 +183,7 @@ export class Upload extends LitElement {
             display: flex;
             width: 100%;
             justify-content: center;
+            pointer-events: none;
          }
       `
    }
