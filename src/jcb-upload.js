@@ -12,6 +12,7 @@ import { readFileAsyncAsArrayBuffer, isItemAcceptable } from './lib/utilities.mj
    * @cssprop --jcb-upload-border-width
    * @cssprop --jcb-upload-border-color
    * @cssprop --jcb-upload-border-radius
+   * @cssprop --jcb-upload-padding - Content padding
    */
 export class Upload extends LitElement {
 
@@ -158,6 +159,7 @@ export class Upload extends LitElement {
             border-color: var(--jcb-upload-border-color, #aaa);
             border-radius: var(--jcb-upload-border-radius, 20px);
             margin: auto;
+            padding: var(--jcb-upload-padding, 20px);
             cursor: pointer;
             width: 100%;
             height: 100%;
