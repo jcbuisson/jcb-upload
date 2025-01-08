@@ -14,20 +14,22 @@ Usage
    </head>
    <body>
       <div class="panel">
-         <jcb-upload id="upload">
-            Drag & drop files here. See <a href='#'>there</a>
+         <jcb-upload id="upload" multiple chunksize="32768" accept="application/pdf, image/*">
+            Drag & drop files or click here. See <a href='#'>example</a>
          </jcb-upload>
       </div>
    </body>
 </html>
 
 <script>
-   document.getElementById('upload').addEventListener('upload-start', (e) => console.log(e))
+   document.getElementById('upload').addEventListener('upload-start', (e) => console.log('upload-start', e))
+   document.getElementById('upload').addEventListener('upload-chunk', (e) => console.log('upload-chunk', e))
+   document.getElementById('upload').addEventListener('upload-end', (e) => console.log('upload-end', e))
+   document.getElementById('upload').addEventListener('upload-error', (e) => console.log('upload-error', e))
 </script>
 
 <style>
 :root {
-   --jcb-upload-color: red;
    --jcb-upload-background-color: #fcfcfc;
    --jcb-upload-hover-color: #ccc;
    --jcb-upload-border-width: 3px;
