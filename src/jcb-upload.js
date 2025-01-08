@@ -30,25 +30,33 @@ export class Upload extends LitElement {
       this.multiple = false
       this.chunksize = 32768
       this.accept = undefined
+
+      this.enterCount = 0
    }
 
    onDragEnter(e) {
       console.log('onDragEnter', e)
       e.preventDefault() // prevent default to allow drop (why?)
-      // when firing dragenter, dragover and dragleave, browser shows only e.dataTransfer.items, not e.dataTransfer.files (see https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items)
-      const acceptable = (this.multiple || e.dataTransfer.items.length === 1) && Array.from(e.dataTransfer.items).every(item => isItemAcceptable(item, this.accept))
-      e.target.classList.add(acceptable ? 'hovering' : 'error')
+      this.enterCount += 1
+      if (this.enterCount >= 1) {
+         // when firing dragenter, dragover and dragleave, browser shows only e.dataTransfer.items, not e.dataTransfer.files (see https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/items)
+         const acceptable = (this.multiple || e.dataTransfer.items.length === 1) && Array.from(e.dataTransfer.items).every(item => isItemAcceptable(item, this.accept))
+         e.target.classList.add(acceptable ? 'hovering' : 'error')
+      }
    }
 
    onDragOver(e) {
-      console.log('onDragOver', e)
+      // console.log('onDragOver', e)
       e.preventDefault() // prevent default to allow drop (why?)
    }
 
    onDragLeave(e) {
       console.log('onDragLeave', e)
-      e.target.classList.remove('hovering')
-      e.target.classList.remove('error')
+      this.enterCount -= 1
+      if (this.enterCount <= 0) {
+         e.target.classList.remove('hovering')
+         e.target.classList.remove('error')
+      }
    }
 
    onDrop(e) {
@@ -129,8 +137,8 @@ export class Upload extends LitElement {
       // console.log('render')
       return html`
          <div class="dropzone" @dragenter="${this.onDragEnter}" @dragover="${this.onDragOver}" @dragleave="${this.onDragLeave}" @drop="${this.onDrop}" @click="${this.onClick}">
-            <div class="text">
-               <div>
+            <div class="text-panel">
+               <div class="text">
                   <slot></slot>
                </div>
             </div>
@@ -179,11 +187,14 @@ export class Upload extends LitElement {
             background-color: var(--jcb-upload-error-color, #F88);
          }
 
-         .text {
+         .text-panel {
             display: flex;
             width: 100%;
             justify-content: center;
-            pointer-events: none;
+         }
+
+         .text {
+            ppointer-events: none;
          }
       `
    }
