@@ -9,9 +9,9 @@ import { readFileAsyncAsArrayBuffer, isItemAcceptable } from './lib/utilities.mj
    * @cssprop --jcb-upload-background-color - Color of the background
    * @cssprop --jcb-upload-hover-color - Color of the background on hover
    * @cssprop --jcb-upload-error-color - Color of the background on hover with unacceptable files
-   * @cssprop --jcb-upload-border-width
-   * @cssprop --jcb-upload-border-color
-   * @cssprop --jcb-upload-border-radius
+   * @cssprop --jcb-upload-border-width - Dotted border width
+   * @cssprop --jcb-upload-border-color - Dotted border color
+   * @cssprop --jcb-upload-border-radius - Dotted border corner radius
    * @cssprop --jcb-upload-padding - Content padding
    */
 export class Upload extends LitElement {
