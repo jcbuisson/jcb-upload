@@ -3,16 +3,20 @@ import { readFileAsyncAsArrayBuffer, isItemAcceptable } from './lib/utilities.mj
 
 /**
    * A custom-element which displays a drag&drop zone and handles file uploads
-   * @attr {Boolean} multiple - Indicates whether multiple files can be uploaded
-   * @attr {Number} chunksize - Chunk size when providing file contents chunk by chunk
-   * @attr {String} accept - Accepted Mime types, comma-separated
-   * @cssprop --jcb-upload-background-color - Color of the background
-   * @cssprop --jcb-upload-hover-color - Color of the background on hover
-   * @cssprop --jcb-upload-error-color - Color of the background on hover with unacceptable files
-   * @cssprop --jcb-upload-border-width - Dotted border width
-   * @cssprop --jcb-upload-border-color - Dotted border color
-   * @cssprop --jcb-upload-border-radius - Dotted border corner radius
-   * @cssprop --jcb-upload-padding - Content padding
+   * @attr {Boolean} multiple - Indicates whether multiple files can be uploaded (default: false)
+   * @attr {Number} chunksize - Chunk size when providing file contents by chunk (default: 32768) |
+   * @attr {String} accept - Accepted Mime types, comma-separated (default: undefined) |
+   * @cssprop --jcb-upload-background-color - Color of the background (default: #fcfcfc)
+   * @cssprop --jcb-upload-hover-color - Color of the background on hover (default: #f0f0f0)
+   * @cssprop --jcb-upload-error-color - Color of the background on hover with unacceptable files (default: #F88)
+   * @cssprop --jcb-upload-border-width - Dotted border width (default: 2px)
+   * @cssprop --jcb-upload-border-color - Dotted border color (default: #aaa)
+   * @cssprop --jcb-upload-border-radius - Dotted border corner radius (default: 20px)
+   * @cssprop --jcb-upload-padding - Content padding (default: 20px)
+   * @event upload-start - Fired when the upload of a file starts.
+   * @event upload-chunk - Fired for each chunk during a file upload; details = { file, arrayBufferSlice } indicates a new chunk arrayBufferSlice of file
+   * @event upload-end - Fired when the upload of a file completes; details = { file }
+   * @event upload-error - Fired when an error occurs during upload; details = { errorCode } errorCode='no-multiple' when several files are provided while 'multiple' attribute is not set ; errorCode='wrong-type' when one of the files is of a Mime-type not compatible with 'accept' attribute
    */
 export class Upload extends LitElement {
 

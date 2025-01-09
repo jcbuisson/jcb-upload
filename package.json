@@ -1,6 +1,8 @@
 {
   "name": "jcb-upload",
-  "version": "1.0.5",
+  "author": "JCB",
+  "license": "MIT",
+  "version": "1.0.6",
   "type": "module",
   "main": "dist/jcb-upload.js",
   "exports": {
@@ -11,8 +13,21 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "docgen": "docgen --api GoogleAuthPlugin --output-readme README2.md"
   },
+  "keywords": [
+    "webcomponent",
+    "upload"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcbuisson/jcb-upload"
+  },
+
+
+
+
   "dependencies": {
     "lit": "^2.8.0"
   },
