@@ -39,7 +39,7 @@ export class Upload extends LitElement {
    }
 
    onDragEnter(e) {
-      console.log('onDragEnter', e)
+      // console.log('onDragEnter', e)
       e.preventDefault() // prevent default to allow drop (why?)
       this.enterCount += 1
       if (this.enterCount >= 1) {
@@ -55,7 +55,7 @@ export class Upload extends LitElement {
    }
 
    onDragLeave(e) {
-      console.log('onDragLeave', e)
+      // console.log('onDragLeave', e)
       this.enterCount -= 1
       if (this.enterCount <= 0) {
          e.target.classList.remove('hovering')
@@ -198,7 +198,7 @@ export class Upload extends LitElement {
          }
 
          .text {
-            ppointer-events: none;
+            pointer-events: none;
          }
       `
    }

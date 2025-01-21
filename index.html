@@ -8,8 +8,8 @@
    </head>
    <body>
       <div class="panel">
-         <jcb-upload id="upload" multiple chunksize="32768" accept="application/pdf, image/*">
-            Drag & drop files or click here. See <a href='#'>example</a>
+         <jcb-upload id="upload" multiple chunksize="32768" accept="application/pdf, image/*" clickablecontent>
+            Drag & drop files or click here.</a>
          </jcb-upload>
       </div>
    </body>
@@ -29,6 +29,7 @@
    --jcb-upload-border-width: 3px;
    --jcb-upload-border-color: #800;
    --jcb-upload-border-radius: 40px;
+   --jcb-upload-content-pointer-events: auto;
 }
 
 .panel {

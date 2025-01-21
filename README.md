@@ -9,11 +9,11 @@ A custom-element that displays a drag-and-drop zone and handles file uploads.
 
 ## Attributes
 
-| Attribute  | Type    | Default   | Description                                              |
-|------------|---------|-----------|----------------------------------------------------------|
-| `multiple` | Boolean | `false`   | Indicates whether multiple files can be uploaded.       |
-| `chunksize`| Number  | `32768`   | Chunk size when providing file contents by chunk.       |
-| `accept`   | String  | `undefined` | Accepted MIME types, comma-separated.                 |
+| Attribute          | Type    | Default     | Description                                              |
+|--------------------|---------|-------------|----------------------------------------------------------|
+| `multiple`         | Boolean | `false`     | Indicates whether multiple files can be uploaded.        |
+| `chunksize`        | Number  | `32768`     | Chunk size when providing file contents by chunk.        |
+| `accept`           | String  | `undefined` | Accepted MIME types, comma-separated.                    |
 
 ---
 
@@ -22,12 +22,12 @@ A custom-element that displays a drag-and-drop zone and handles file uploads.
 | CSS Property                          | Default    | Description                                              |
 |---------------------------------------|------------|----------------------------------------------------------|
 | `--jcb-upload-background-color`       | `#fcfcfc`  | Color of the background.                                 |
-| `--jcb-upload-hover-color`            | `#f0f0f0`  | Color of the background on hover.                       |
+| `--jcb-upload-hover-color`            | `#f0f0f0`  | Color of the background on hover.                        |
 | `--jcb-upload-error-color`            | `#F88`     | Color of the background when hovering with unacceptable files. |
-| `--jcb-upload-border-width`           | `2px`      | Dotted border width.                                    |
-| `--jcb-upload-border-color`           | `#aaa`     | Dotted border color.                                    |
-| `--jcb-upload-border-radius`          | `20px`     | Dotted border corner radius.                            |
-| `--jcb-upload-padding`                | `20px`     | Content padding.                                        |
+| `--jcb-upload-border-width`           | `2px`      | Dotted border width.                                     |
+| `--jcb-upload-border-color`           | `#aaa`     | Dotted border color.                                     |
+| `--jcb-upload-border-radius`          | `20px`     | Dotted border corner radius.                             |
+| `--jcb-upload-padding`                | `20px`     | Content padding.                                         |
 
 ---
 
@@ -79,7 +79,7 @@ A custom-element that displays a drag-and-drop zone and handles file uploads.
    <body>
       <div class="panel">
          <jcb-upload id="upload" multiple chunksize="32768" accept="application/pdf, image/*">
-            Drag & drop files or click here. See <a href='#'>example</a>
+            Drag & drop files or click here.</a>
          </jcb-upload>
       </div>
    </body>
